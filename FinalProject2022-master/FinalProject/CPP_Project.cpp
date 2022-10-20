@@ -53,6 +53,58 @@ void inputMatrix(int **arr, int *row, int *col){
     }
 }
 
+void addition(int **arr1, int *row, int *col, int **arr2){
+    for(int i = 0; i < *row; i++){
+        for(int j = 0; j < *col; j++){
+            arr1[i][j] += arr2[i][j];
+        }
+    }
+}
+
+void substraction(int **arr1, int *row, int *col, int **arr2){
+    for(int i = 0; i < *row; i++){
+        for(int j = 0; j < *col; j++){
+            arr1[i][j] -= arr2[i][j];
+        }
+    }
+}
+
+void transpose(int **arr1, int *row, int *col){
+    for(int i = 0; i < *row; i++){
+        for(int j = 0; j < *col; j++){
+            arr1[i][j] = arr1[j][i];
+        }
+    }
+}
+
+void inverse2x2(int **arr){
+    int d;
+    int two = 2;
+    d = 1/(arr[0][0]*arr[2][2] - arr[0][1]*arr[1][0]);
+	arr[0][0] = arr[2][2];
+	arr[0][1] = -arr[0][1];
+	arr[1][0] = -arr[1][0];
+	arr[1][1] = arr[0][0];
+	arr = scalarMultiplication(arr, &two, &two, d);
+}
+
+int** scalarMultiplication(int **arr, int *row, int *col, int k){
+    for(int i = 0; i < *row; i++){
+        for(int j = 0; j < *col; j++){
+            arr[i][j] *= k;
+        }
+    }
+    return arr;
+}
+
+void matrixMult (int **arr1, int **arr2, int *row, int *col){
+    for(int i = 0; i < *row; i++){
+        for(int j = 0; j < *col; j++){
+            arr1[i][j] *= arr2[j][i];
+        }
+    }
+}
+
 void printMatrix(int **arr, int *row, int *col){
     for(int i = 0; i < *row; i++){
         for(int j = 0; j < *col; j++){
