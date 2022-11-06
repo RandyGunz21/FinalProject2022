@@ -1,5 +1,6 @@
 #include <iostream>
 #include <iomanip>
+#include <cmath>
 
 #define RED "\e[0;31m"
 #define WHITE "\e[0m"
@@ -11,21 +12,25 @@ struct matD{
     int row;
     int column;
 };
-int mainMenu(); int** arrDec(int *row, int *column);
-void inputMatrix(int **arr, int *row, int *column);
-void printMatrix(int **arr, int *row, int *column);
-void inputHeader(int *row, int *col);
+int mainMenu(); double** arrDec(matD ordo);
+void inputMatrix(double **arr, matD ordo);
+void printMatrix(double **arr, matD ordo);
+void inputHeader(matD &ordo);
 void note(int n); void menuHeader(int n);
 int chosing(); int chosing2();
-int** addition(int **arr1, int **arr2, int *row, int *col);
-int** substraction(int **arr1, int **arr2, int *row, int *col);
-int** multiply(int **arr1, int **arr2, int *resRow, int *resCol, int *sameRowCol);
-int** scalar(int **arr, int *row, int *col, int *k);
-int** transpose(int **arr, int *row, int *col);
+double** addition(double **arr1, double **arr2, matD ordo);
+double** substraction(double **arr1, double **arr2, matD ordo);
+double** multiply(double **arr1, double **arr2, matD ordo1, matD ordo2);
+double** scalar(double **arr, matD ordo, double *k);
+double** transpose(double **arr, matD ordo);
+int det(double **arr, matD ordo);
+double** matrixMinor(double **arr, matD ordo);
+double** cof(double **arr, matD ordo);
+double** inv(double **arr, matD ordo);
 
 int main(){
     main:
-    int **m1, **m2, **res;
+    double **m1, **m2, **res;
     matD ordo1;
     int count;
     char ans;
@@ -37,12 +42,12 @@ int main(){
             case 1:
             add:
             system("cls"); menuHeader(1); count = 3;
-            note(1); inputHeader(&ordo1.row, &ordo1.column);
-            res = arrDec(&ordo1.row, &ordo1.column);
-            m1 = arrDec(&ordo1.row, &ordo1.column); m2 = arrDec(&ordo1.row, &ordo1.column);
-            cout << "Matrix 1:\n"; inputMatrix(m1, &ordo1.row, &ordo1.column);
-            cout << "\nMatrix 2:\n"; inputMatrix(m2, &ordo1.row, &ordo1.column);
-            res = addition(m1, m2, &ordo1.row, &ordo1.column);
+            note(1); inputHeader(ordo1);
+            res = arrDec(ordo1);
+            m1 = arrDec(ordo1); m2 = arrDec(ordo1);
+            cout << "Matrix 1:\n"; inputMatrix(m1, ordo1);
+            cout << "\nMatrix 2:\n"; inputMatrix(m2, ordo1);
+            res = addition(m1, m2, ordo1);
             do{
                 cout << "\nAre you want to add more matrix to add?\n";
                 do{
@@ -52,12 +57,12 @@ int main(){
 
                 if(ans == 'y' || ans == 'Y'){
                     cout << "\nMatrix " << count << ":\n";
-                    inputMatrix(m2, &ordo1.row, &ordo1.column); count++;
-                    res = addition(res, m2, &ordo1.row, &ordo1.column);
+                    inputMatrix(m2, ordo1); count++;
+                    res = addition(res, m2, ordo1);
                 }
                 else{
                     cout << GREEN "\nResult:\n";
-                    printMatrix(res, &ordo1.row, &ordo1.column);
+                    printMatrix(res, ordo1);
                     cout << WHITE;
                     switch(chosing2()){
                         case 1:
@@ -86,12 +91,12 @@ int main(){
             case 1:
             subs:
             system("cls"); menuHeader(2); count = 3;
-            note(2); inputHeader(&ordo1.row, &ordo1.column);
-            res = arrDec(&ordo1.row, &ordo1.column);
-            m1 = arrDec(&ordo1.row, &ordo1.column); m2 = arrDec(&ordo1.row, &ordo1.column);
-            cout << "Matrix 1:\n"; inputMatrix(m1, &ordo1.row, &ordo1.column);
-            cout << "\nMatrix 2:\n"; inputMatrix(m2, &ordo1.row, &ordo1.column);
-            res = substraction(m1, m2, &ordo1.row, &ordo1.column);
+            note(2); inputHeader(ordo1);
+            res = arrDec(ordo1);
+            m1 = arrDec(ordo1); m2 = arrDec(ordo1);
+            cout << "Matrix 1:\n"; inputMatrix(m1, ordo1);
+            cout << "\nMatrix 2:\n"; inputMatrix(m2, ordo1);
+            res = substraction(m1, m2, ordo1);
             do{
                 cout << "\nAre you want to add more matrix to substract?\n";
                 do{
@@ -101,12 +106,12 @@ int main(){
 
                 if(ans == 'y' || ans == 'Y'){
                     cout << "\nMatrix " << count << ":\n";
-                    inputMatrix(m2, &ordo1.row, &ordo1.column); count++;
-                    res = substraction(res, m2, &ordo1.row, &ordo1.column);
+                    inputMatrix(m2, ordo1); count++;
+                    res = substraction(res, m2, ordo1);
                 }
                 else{
                     cout << GREEN "\nResult:\n";
-                    printMatrix(res, &ordo1.row, &ordo1.column);
+                    printMatrix(res, ordo1);
                     cout << WHITE;
                     switch(chosing2()){
                         case 1:
@@ -136,23 +141,23 @@ int main(){
             multiply:
             matD ordo2, ordoRes; count = 3;
             system("cls"); menuHeader(3); note(3);
-            inputHeader(&ordo1.row, &ordo1.column); m1 = arrDec(&ordo1.row, &ordo1.column);
-            cout << "Matrix 1:\n"; inputMatrix(m1, &ordo1.row, &ordo1.column);
+            inputHeader(ordo1); m1 = arrDec(ordo1);
+            cout << "Matrix 1:\n"; inputMatrix(m1, ordo1);
             do{
-                inputHeader(&ordo2.row, &ordo2.column);
+                inputHeader(ordo2);
                 if(ordo1.column != ordo2.row)
                     cout << RED "Matrix 1 column and matrix 2 row should be same\n" << WHITE;
 
             }while(ordo1.column != ordo2.row);
 
-            m2 = arrDec(&ordo2.row, &ordo2.column);
-            cout << "Matrix 2:\n"; inputMatrix(m2, &ordo2.row, &ordo2.column);
+            m2 = arrDec(ordo2);
+            cout << "Matrix 2:\n"; inputMatrix(m2, ordo2);
             ordoRes.row = ordo1.row; ordoRes.column = ordo2.column;
-            res = arrDec(&ordoRes.row, &ordoRes.column);
-            res = multiply(m1, m2, &ordo1.row, &ordo2.column, &ordo1.column);
+            res = arrDec(ordoRes);
+            res = multiply(m1, m2, ordo1, ordo2);
             do{
                 cout << GREEN "\nResult:\n";
-                printMatrix(res, &ordo1.row, &ordo2.column);
+                printMatrix(res, ordoRes);
                 cout << WHITE "\nAre you want to add more matrix to multiply?\n";
                 do{
                     cout << "Choose[y/n] >> ";
@@ -161,14 +166,14 @@ int main(){
 
                 if(ans == 'y' || ans == 'Y'){
                     do{
-                        inputHeader(&ordo2.row, &ordo2.column);
+                        inputHeader(ordo2);
                         if(ordoRes.column != ordo2.row)
                             cout << RED "Matrix result column and matrix " << count << " row should be same\n" << WHITE;
 
                     }while(ordoRes.column != ordo2.row);
                     cout << "Matrix " << count << ":\n";
-                    inputMatrix(m2, &ordo2.row, &ordo2.column); count++;
-                    res = multiply(res, m2, &ordo1.row, &ordo2.column, &ordoRes.column);
+                    inputMatrix(m2, ordo2); count++;
+                    res = multiply(res, m2, ordoRes, ordo2);
                 }
                 else{
                     switch(chosing2()){
@@ -197,15 +202,14 @@ int main(){
         switch(chosing()){
             case 1:
             scalar:
-            int mul;
+            double mul;
             system("cls"); menuHeader(4);
-            note(4); inputHeader(&ordo1.row, &ordo1.column);
-            m1 = arrDec(&ordo1.row, &ordo1.column);
-            cout << "Matrix:\n"; inputMatrix(m1, &ordo1.row, &ordo1.column);
+            note(4); inputHeader(ordo1);
+            m1 = arrDec(ordo1);
+            cout << "Matrix:\n"; inputMatrix(m1, ordo1);
             cout << "\nMultiplier: "; cin >> mul;
             cout << GREEN << "\nResult:\n";
-            printMatrix(scalar(m1, &ordo1.row, &ordo1.column, &mul),
-            &ordo1.row, &ordo1.column); cout << WHITE;
+            printMatrix(scalar(m1, ordo1, &mul), ordo1); cout << WHITE;
             switch(chosing2()){
                 case 1:
                 goto scalar;
@@ -231,12 +235,13 @@ int main(){
             case 1:
             trans:
             system("cls"); menuHeader(5);
-            note(5); inputHeader(&ordo1.row, &ordo1.column);
-            m1 = arrDec(&ordo1.row, &ordo1.column);
-            cout << "Matrix:\n"; inputMatrix(m1, &ordo1.row, &ordo1.column);
+            note(5); inputHeader(ordo1);
+            m1 = arrDec(ordo1);
+            cout << "Matrix:\n"; inputMatrix(m1, ordo1);
+            matD tmp;
+            tmp.row = ordo1.column; tmp.column = ordo1.row;
             cout << GREEN << "\nResult:\n";
-            printMatrix(transpose(m1, &ordo1.row, &ordo1.column),
-            &ordo1.column, &ordo1.row); cout << WHITE;
+            printMatrix(transpose(m1, ordo1), tmp); cout << WHITE;
             switch(chosing2()){
                 case 1:
                 goto trans;
@@ -261,13 +266,16 @@ int main(){
         switch(chosing()){
             case 1:
             determinant:
-            system("cls"); menuHeader(6);
-            note(6); inputHeader(&ordo1.row, &ordo1.column);
-            m1 = arrDec(&ordo1.row, &ordo1.column);
-            cout << "Matrix:\n"; inputMatrix(m1, &ordo1.row, &ordo1.column);
-            cout << GREEN << "\nResult:\n";
-            printMatrix(transpose(m1, &ordo1.row, &ordo1.column),
-            &ordo1.column, &ordo1.row); cout << WHITE;
+            system("cls"); menuHeader(6); note(6);
+            do{
+                inputHeader(ordo1);
+                if(ordo1.row != ordo1.column){
+                    cout << RED << "The matrix row and column must be same\n" << WHITE;
+                }
+            }while(ordo1.row != ordo1.column);
+            m1 = arrDec(ordo1);
+            cout << "Matrix:\n"; inputMatrix(m1, ordo1);
+            cout << GREEN << "\nResult: " << det(m1, ordo1) << WHITE << endl;
             switch(chosing2()){
                 case 1:
                 goto determinant;
@@ -285,15 +293,48 @@ int main(){
             break;
         }
         break;
+
+        case 7:
+        system("cls");
+        menuHeader(7); note(7);
+        switch(chosing()){
+            case 1:
+            inverse:
+            system("cls"); menuHeader(7);
+            note(7); inputHeader(ordo1);
+            m1 = arrDec(ordo1);
+            cout << "Matrix:\n"; inputMatrix(m1, ordo1);
+            cout << GREEN << "\nResult:\n";
+            printMatrix(inv(m1, ordo1), ordo1); cout << WHITE;
+            switch(chosing2()){
+                case 1:
+                goto inverse;
+
+                case 2:
+                goto main;
+
+                case 3:
+                system("exit");
+            }
+            break;
+
+            case 2:
+            goto main;
+            break;
+        }
+        break;
+
+        case 8:
+        system("exit");
     }
     return 0;
 }
 
-int** arrDec(int *row, int *column){
-    int **array;
-    array = new int *[*row];
-    for(int i = 0; i < *row; i++){
-        array[i] = new int [*column];
+double** arrDec(matD ordo){
+    double **array;
+    array = new double *[ordo.row];
+    for(int i = 0; i < ordo.row; i++){
+        array[i] = new double [ordo.column];
     }
     return array;
 }
@@ -307,7 +348,7 @@ int mainMenu(){
     cout << "Please choose the matrix operation you want\n";
     cout << "1. Matrix Addition\n" << "2. Matrix Substraction\n";
     cout << "3. Matrix Multiplication\n" << "4. Scalar Multiplication\n";
-    cout << "5. Transpose\n" << "6. Daterminant\n";
+    cout << "5. Transpose\n" << "6. Determinant\n";
     cout << "7. Inverse\n" << "8. Exit\n";
     do{
         cout << "Choose[1-8] >> ";
@@ -318,31 +359,36 @@ int mainMenu(){
     return n;
 }
 
-void inputMatrix(int **arr, int *row, int *column){
-    for(int i = 0; i < *row; i++){
-        for(int j = 0; j < *column; j++){
+void inputMatrix(double **arr, matD ordo){
+    for(int i = 0; i < ordo.row; i++){
+        for(int j = 0; j < ordo.column; j++){
             cout << "M[" << i+1 << "][" << j+1 << "] : ";
             cin >> arr[i][j];
         }
     }
 }
 
-void printMatrix(int **arr, int *row, int *column){
-    for(int i = 0; i < *row; i++){
+void printMatrix(double **arr, matD ordo){
+    for(int i = 0; i < ordo.row; i++){
         cout << "|";
-        for(int j = 0; j < *column; j++){
-            cout << setw(5) << arr[i][j];
+        for(int j = 0; j < ordo.column; j++){
+            cout << setw(5) << setprecision(2) << arr[i][j];
         }
         cout << " |\n";
     }
 }
 
-void inputHeader(int *row, int *col){
-    cout << endl << "Please input the number of column and row\n";
-    cout << "Column : ";
-    cin >> *col;
-    cout << "Row    : ";
-    cin >> *row;
+void inputHeader(matD &ordo){
+    do{
+        cout << endl << "Please input the number of column and row\n";
+        cout << "Column : ";
+        cin >> ordo.column;
+        cout << "Row    : ";
+        cin >> ordo.row;
+        if(ordo.column <= 0 || ordo.row <= 0){
+            cout << RED << "\nColumn and Row number must be postive\n" << WHITE;
+        }
+    }while(ordo.column <= 0 || ordo.row <= 0);
     cout << endl;
 }
 
@@ -381,6 +427,12 @@ void menuHeader(int n){
         case 6:
         cout << "======================================" << endl;
         cout << "|         MATRIX DETERMINANT         |" << endl;
+        cout << "======================================" << endl;
+        break;
+
+        case 7:
+        cout << "======================================" << endl;
+        cout << "|           INVERSE MATRIX           |" << endl;
         cout << "======================================" << endl;
         break;
     }
@@ -426,6 +478,12 @@ void note(int n){
         cout << "Note:\n";
         cout << "Determinant of matrix only available for square matrix such as 2x2 or 3x3 matrix.\n";
         break;
+
+        case 7:
+        cout << "Note:\n";
+        cout << "Inverse of matrix only available for square matrix such as 2x2 or 3x3 matrix.\n"
+        << "Inverse of matrix also available if the determinat of the matrix is not equal 0.\n";
+        break;
     }
 }
 
@@ -451,35 +509,38 @@ int chosing2(){
     return a;
 }
 
-int** addition(int **arr1, int **arr2, int *row, int *col){
-    int** result;
-    result = arrDec(row, col);
-    for(int i = 0; i < *row; i++){
-        for(int j = 0; j < *col; j++){
+double** addition(double **arr1, double **arr2, matD ordo){
+    double** result;
+    result = arrDec(ordo);
+    for(int i = 0; i < ordo.row; i++){
+        for(int j = 0; j < ordo.column; j++){
             result[i][j] = arr1[i][j] + arr2[i][j];
         }
     }
     return result;
 }
 
-int** substraction(int **arr1, int **arr2, int *row, int *col){
-    int** result;
-    result = arrDec(row, col);
-    for(int i = 0; i < *row; i++){
-        for(int j = 0; j < *col; j++){
+double** substraction(double **arr1, double **arr2, matD ordo){
+    double** result;
+    result = arrDec(ordo);
+    for(int i = 0; i < ordo.row; i++){
+        for(int j = 0; j < ordo.column; j++){
             result[i][j] = arr1[i][j] - arr2[i][j];
         }
     }
     return result;
 }
 
-int** multiply(int **arr1, int **arr2, int *resRow, int *resCol, int *sameRowCol){
-    int** result;
-    result = arrDec(resRow, resCol);
-    for(int i = 0; i < *resRow; i++){
-        for(int j = 0; j < *resCol; j++){
+double** multiply(double **arr1, double **arr2, matD ordo1, matD ordo2){
+    double** result;
+    matD resOrd;
+    resOrd.column = ordo2.column;
+    resOrd.row = ordo1.row;
+    result = arrDec(resOrd);
+    for(int i = 0; i < resOrd.row; i++){
+        for(int j = 0; j < resOrd.column; j++){
             result[i][j] = 0;
-            for(int k = 0; k < *sameRowCol; k++){
+            for(int k = 0; k < ordo1.column; k++){
                 result[i][j] += (arr1[i][k]*arr2[k][j]);
             }
         }
@@ -487,30 +548,109 @@ int** multiply(int **arr1, int **arr2, int *resRow, int *resCol, int *sameRowCol
     return result;
 }
 
-int** scalar(int **arr, int *row, int *col, int *k){
-    int **result;
-    result = arrDec(row, col);
-    for(int i = 0; i < *row; i++){
-        for(int j = 0; j < *col; j++){
+double** scalar(double **arr, matD ordo, double *k){
+    double **result;
+    result = arrDec(ordo);
+    for(int i = 0; i < ordo.row; i++){
+        for(int j = 0; j < ordo.column; j++){
             result[i][j] = arr[i][j]*(*k);
         }
     }
     return result;
 }
 
-int** transpose(int **arr, int *row, int *col){
-    int** result;
-    result = arrDec(col, row);
-    for(int i = 0; i < *row; i++){
-        for(int j = 0; j < *col; j++){
-            result[j][i] = arr[i][j];
+double** transpose(double **arr, matD ordo){
+    double** result;
+    unsigned int tmp;
+    tmp = ordo.column;
+    ordo.column = ordo.row;
+    ordo.row = tmp;
+    result = arrDec(ordo);
+    for(int i = 0; i < ordo.row; i++){
+        for(int j = 0; j < ordo.column; j++){
+            result[i][j] = arr[j][i];
         }
     }
     return result;
 }
 
-/*int** det(int **arr, int *row, int *col){
-    int** result;
-    result = arrDec(row, column);
-    
-}*/
+int det(double **arr, matD ordo){
+    int result = 0;
+    if(ordo.row == 2){
+        result = (arr[0][0]*arr[1][1]) - (arr[0][1]*arr[1][0]);
+    }
+    else{
+        matD ordoTMP;
+        ordoTMP.column = ordo.column-1;
+        ordoTMP.row = ordo.row-1;
+        for(int i = 0; i < ordo.column; i++){
+            double** tmp;    
+            tmp = arrDec(ordoTMP);
+            for(int a = 0; a < ordo.row-1; a++){
+                for(int b = 0; b < ordo.column-1; b++){
+                    if(b >= i){
+						tmp[a][b] = arr[a+1][b+1];
+					}
+                    else{
+						tmp[a][b] = arr[a+1][b];
+					}
+                }
+            }
+            result += arr[0][i]*(pow(-1, i)*det(tmp, ordoTMP));
+        }    
+    }
+    return result;
+}
+
+double** matrixMinor(double **arr, matD ordo){
+    double **result, **tmp;
+    result = arrDec(ordo);
+    matD ordoTMP;
+    ordoTMP.row = ordo.row-1;
+    ordoTMP.column = ordo.column-1;
+    tmp = arrDec(ordoTMP);
+    for(int a = 0; a < ordo.row; a++){
+        for(int b = 0; b < ordo.column; b++){
+            for(int i = 0; i < ordoTMP.row; i++){
+                for(int j = 0;  j < ordoTMP.column; j++){
+                    if(i >= a && j >= b){
+                        tmp[i][j] = arr[i+1][j+1];
+                    }
+                    else if(i >= a){
+                        tmp[i][j] = arr[i+1][j];
+                    }
+                    else if(j >= b){
+                        tmp[i][j] = arr[i][j+1];
+                    }
+                    else{
+                        tmp[i][j] = arr[i][j];
+                    }
+                }
+            }
+            result[a][b] = det(tmp, ordoTMP);
+        }
+    }
+    return result;
+}
+
+double** cof(double **arr, matD ordo){
+    double** result;
+    result = arrDec(ordo);
+    for(int i = 0; i < ordo.row; i++){
+        for(int j = 0; j < ordo.column; j++){
+            result[i][j] = pow(-1, i+j)*arr[i][j];
+        }
+    }
+    return result;
+}
+
+double** inv(double **arr, matD ordo){
+    double **result, k;
+    k = (double) 1/det(arr, ordo);
+    result = arrDec(ordo);
+    result = matrixMinor(arr, ordo);
+    result = cof(result, ordo);
+    result = transpose(result, ordo);
+    result = scalar(result, ordo, &k);
+    return result;
+}
