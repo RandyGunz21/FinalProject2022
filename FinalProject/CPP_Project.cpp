@@ -9,8 +9,8 @@
 using namespace std;
 
 struct matD{
-    int row;
-    int column;
+    unsigned int row;
+    unsigned int column;
 };
 int mainMenu(); double** arrDec(matD ordo);
 void inputMatrix(double **arr, matD ordo);
@@ -27,6 +27,9 @@ int det(double **arr, matD ordo);
 double** matrixMinor(double **arr, matD ordo);
 double** cof(double **arr, matD ordo);
 double** inv(double **arr, matD ordo);
+int checkW(double **arr, matD ordo);
+int checkN(long int a);
+bool checkD(double a);
 
 int main(){
     main:
@@ -301,9 +304,21 @@ int main(){
             case 1:
             inverse:
             system("cls"); menuHeader(7);
-            note(7); inputHeader(ordo1);
-            m1 = arrDec(ordo1);
-            cout << "Matrix:\n"; inputMatrix(m1, ordo1);
+            note(7);
+            bool check;
+            do{
+                inputHeader(ordo1);
+                m1 = arrDec(ordo1);
+                cout << "Matrix:\n"; inputMatrix(m1, ordo1);
+                if(det(m1, ordo1) == 0){
+                    cout << RED << endl << "For the inverse matrix the determinant"
+                    << " of the matrix must not be zero" << WHITE<< endl;
+                    check = true;
+                }
+                else{
+                    check = false;
+                }
+            }while(check);
             cout << GREEN << "\nResult:\n";
             printMatrix(inv(m1, ordo1), ordo1); cout << WHITE;
             switch(chosing2()){
@@ -369,10 +384,18 @@ void inputMatrix(double **arr, matD ordo){
 }
 
 void printMatrix(double **arr, matD ordo){
+    int n = checkW(arr, ordo);
     for(int i = 0; i < ordo.row; i++){
-        cout << "|";
+        cout << "| ";
         for(int j = 0; j < ordo.column; j++){
-            cout << setw(5) << setprecision(2) << arr[i][j];
+            if(checkD(arr[i][j])){
+                cout << setw(n) << scientific << setprecision(2)
+                << arr[i][j];
+                cout.unsetf(ios::scientific);
+            }
+            else{
+                cout << setw(n) << setprecision(checkN(arr[i][j])+2) << arr[i][j];
+            }
         }
         cout << " |\n";
     }
@@ -645,12 +668,78 @@ double** cof(double **arr, matD ordo){
 }
 
 double** inv(double **arr, matD ordo){
-    double **result, k;
+    double **result, k, tmp;
     k = (double) 1/det(arr, ordo);
-    result = arrDec(ordo);
-    result = matrixMinor(arr, ordo);
-    result = cof(result, ordo);
-    result = transpose(result, ordo);
-    result = scalar(result, ordo, &k);
+    if(ordo.row == 2){
+        tmp = arr[0][0];
+        arr[0][0] = arr[1][1];
+        arr[1][1] = tmp;
+        arr[0][1] *= -1;
+        arr[1][0] *= -1;
+        result = scalar(arr, ordo, &k);
+    }
+    else{
+        result = arrDec(ordo);
+        result = matrixMinor(arr, ordo);
+        result = cof(result, ordo);
+        result = transpose(result, ordo);
+        result = scalar(result, ordo, &k);
+    }
+    return result;
+}
+
+int checkW(double **arr, matD ordo){
+    long int max = 0;
+    double min = 0;
+    int result1 = 0, result2 = 0;
+    bool c = 0;
+    for(int i = 0; i < ordo.row; i++){
+        for(int j = 0; j < ordo.column; j++){
+            if(abs(arr[i][j]) > max){
+                max = (long int) abs(arr[i][j]);
+            }
+            if(arr[i][j] < min){
+                min = arr[i][j];
+            }
+            if(arr[i][j] != (long int) arr[i][j]){
+                c = 1;
+            }
+            if(checkD(arr[i][j])){
+                result2 = 9;
+            }
+        }
+    }
+    if(min < 0) result1+=2;
+    if(c) result1 += 3; else result1++;
+    if(result1 > result2){
+        return result1 + checkN(max);
+    }
+    else{
+        return result2;
+    }
+}
+
+int checkN(long int a){
+    int result = 0;
+    while(a != 0){
+        result++;
+        a = (a-(a%10))/10;
+    }
+    return result;
+}
+
+bool checkD(double a){
+    int count = 0;
+    bool result = false;
+    double tmp;
+    tmp = abs(a);
+    while(tmp*10 < 1){
+        count++;
+        tmp *= 10;
+        if(count == 2){
+            result = true;
+            break;
+        }
+    }
     return result;
 }
