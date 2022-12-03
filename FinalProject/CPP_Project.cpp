@@ -52,7 +52,7 @@ int main(){
             cout << "\nMatrix 2:\n"; inputMatrix(m2, ordo1);
             res = addition(m1, m2, ordo1);
             do{
-                cout << "\nDo you want to add more matrix ?\n";
+                cout << "\nDo you want to add another matrix?\n";
                 do{
                     cout << "Choose[y/n] >> ";
                     cin >> ans;
@@ -101,7 +101,7 @@ int main(){
             cout << "\nMatrix 2:\n"; inputMatrix(m2, ordo1);
             res = substraction(m1, m2, ordo1);
             do{
-                cout << "\nDo you want to add more matrix?\n";
+                cout << "\nDo you want to add another matrix?\n";
                 do{
                     cout << "Choose[y/n] >> ";
                     cin >> ans;
@@ -161,7 +161,7 @@ int main(){
             do{
                 cout << GREEN "\nResult:\n";
                 printMatrix(res, ordoRes);
-                cout << WHITE "\nDo you want to add more matrix?\n";
+                cout << WHITE "\nDo you want to add another matrix?\n";
                 do{
                     cout << "Choose[y/n] >> ";
                     cin >> ans;
