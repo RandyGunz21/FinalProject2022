@@ -17,7 +17,7 @@ void inputMatrix(double **arr, matD ordo);
 void printMatrix(double **arr, matD ordo);
 void inputHeader(matD &ordo);
 void note(int n); void menuHeader(int n);
-int chosing(); int chosing2();
+int choosing(); int choosing2();
 double** addition(double **arr1, double **arr2, matD ordo);
 double** substraction(double **arr1, double **arr2, matD ordo);
 double** multiply(double **arr1, double **arr2, matD ordo1, matD ordo2);
@@ -41,7 +41,7 @@ int main(){
         case 1:
         system("cls");
         menuHeader(1); note(1);
-        switch(chosing()){
+        switch(choosing()){
             case 1:
             add:
             system("cls"); menuHeader(1); count = 3;
@@ -52,7 +52,7 @@ int main(){
             cout << "\nMatrix 2:\n"; inputMatrix(m2, ordo1);
             res = addition(m1, m2, ordo1);
             do{
-                cout << "\nAre you want to add more matrix to add?\n";
+                cout << "\nDo you want to add more matrix ?\n";
                 do{
                     cout << "Choose[y/n] >> ";
                     cin >> ans;
@@ -67,7 +67,7 @@ int main(){
                     cout << GREEN "\nResult:\n";
                     printMatrix(res, ordo1);
                     cout << WHITE;
-                    switch(chosing2()){
+                    switch(choosing2()){
                         case 1:
                         goto add;
 
@@ -90,7 +90,7 @@ int main(){
         case 2:
         system("cls");
         menuHeader(2); note(2);
-        switch(chosing()){
+        switch(choosing()){
             case 1:
             subs:
             system("cls"); menuHeader(2); count = 3;
@@ -101,7 +101,7 @@ int main(){
             cout << "\nMatrix 2:\n"; inputMatrix(m2, ordo1);
             res = substraction(m1, m2, ordo1);
             do{
-                cout << "\nAre you want to add more matrix to substract?\n";
+                cout << "\nDo you want to add more matrix?\n";
                 do{
                     cout << "Choose[y/n] >> ";
                     cin >> ans;
@@ -116,7 +116,7 @@ int main(){
                     cout << GREEN "\nResult:\n";
                     printMatrix(res, ordo1);
                     cout << WHITE;
-                    switch(chosing2()){
+                    switch(choosing2()){
                         case 1:
                         goto subs;
 
@@ -139,7 +139,7 @@ int main(){
         case 3:
         system("cls");
         menuHeader(3); note(3);
-        switch(chosing()){
+        switch(choosing()){
             case 1:
             multiply:
             matD ordo2, ordoRes; count = 3;
@@ -161,7 +161,7 @@ int main(){
             do{
                 cout << GREEN "\nResult:\n";
                 printMatrix(res, ordoRes);
-                cout << WHITE "\nAre you want to add more matrix to multiply?\n";
+                cout << WHITE "\nDo you want to add more matrix?\n";
                 do{
                     cout << "Choose[y/n] >> ";
                     cin >> ans;
@@ -179,7 +179,7 @@ int main(){
                     res = multiply(res, m2, ordoRes, ordo2);
                 }
                 else{
-                    switch(chosing2()){
+                    switch(choosing2()){
                         case 1:
                         goto multiply;
 
@@ -202,7 +202,7 @@ int main(){
         case 4:
         system("cls");
         menuHeader(4); note(4);
-        switch(chosing()){
+        switch(choosing()){
             case 1:
             scalar:
             double mul;
@@ -213,7 +213,7 @@ int main(){
             cout << "\nMultiplier: "; cin >> mul;
             cout << GREEN << "\nResult:\n";
             printMatrix(scalar(m1, ordo1, &mul), ordo1); cout << WHITE;
-            switch(chosing2()){
+            switch(choosing2()){
                 case 1:
                 goto scalar;
 
@@ -234,7 +234,7 @@ int main(){
         case 5:
         system("cls");
         menuHeader(5); note(5);
-        switch(chosing()){
+        switch(choosing()){
             case 1:
             trans:
             system("cls"); menuHeader(5);
@@ -245,7 +245,7 @@ int main(){
             tmp.row = ordo1.column; tmp.column = ordo1.row;
             cout << GREEN << "\nResult:\n";
             printMatrix(transpose(m1, ordo1), tmp); cout << WHITE;
-            switch(chosing2()){
+            switch(choosing2()){
                 case 1:
                 goto trans;
 
@@ -266,7 +266,7 @@ int main(){
         case 6:
         system("cls");
         menuHeader(6); note(6);
-        switch(chosing()){
+        switch(choosing()){
             case 1:
             determinant:
             system("cls"); menuHeader(6); note(6);
@@ -279,7 +279,7 @@ int main(){
             m1 = arrDec(ordo1);
             cout << "Matrix:\n"; inputMatrix(m1, ordo1);
             cout << GREEN << "\nResult: " << det(m1, ordo1) << WHITE << endl;
-            switch(chosing2()){
+            switch(choosing2()){
                 case 1:
                 goto determinant;
 
@@ -300,7 +300,7 @@ int main(){
         case 7:
         system("cls");
         menuHeader(7); note(7);
-        switch(chosing()){
+        switch(choosing()){
             case 1:
             inverse:
             system("cls"); menuHeader(7);
@@ -321,7 +321,7 @@ int main(){
             }while(check);
             cout << GREEN << "\nResult:\n";
             printMatrix(inv(m1, ordo1), ordo1); cout << WHITE;
-            switch(chosing2()){
+            switch(choosing2()){
                 case 1:
                 goto inverse;
 
@@ -510,7 +510,7 @@ void note(int n){
     }
 }
 
-int chosing(){
+int choosing(){
     int z;
     cout << "1. Calculate\n2. Back\n";
     do{
@@ -520,7 +520,7 @@ int chosing(){
     return z;
 }
 
-int chosing2(){
+int choosing2(){
     int a;
     cout << "\nWhere you want to go?\n";
     cout << "1. Calculate again\n"
